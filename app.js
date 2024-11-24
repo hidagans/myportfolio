@@ -21,8 +21,9 @@ async function startApp() {
     }
 
   } catch (error) {
-    console.warn('⚠️ Application started with warnings:', error.message);
+    console.warn('⚠️ Database connection failed:', error.message);
     console.warn('Running in development mode with mock data');
+    console.warn('Make sure your MySQL server is running and accessible');
   }
 }
 
