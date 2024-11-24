@@ -1,42 +1,28 @@
-# Portfolio Website
+<content># Portfolio Website
 
 A modern portfolio website with blog and admin panel, built with Astro and React.
 
-## Installation
+## cPanel Installation Guide
 
-### Quick Install (Recommended)
-
-1. Upload the files to your hosting
-2. Visit `yourdomain.com/install`
-3. Follow the installation wizard to:
-   - Configure your database
-   - Create admin account
-   - Set up environment variables
-
-### Manual Installation
-
-1. Create MySQL Database:
-   - Go to cPanel > MySQL Databases
-   - Create a new database
-   - Create a new user
-   - Add user to database with all privileges
-
-2. Configure Environment:
-   - Copy `.env.example` to `.env`
-   - Update database credentials in `.env`
-   - Set a secure JWT_SECRET
-
-3. Build the project locally:
+1. Build the project locally:
    ```bash
    npm install
    npm run build
    ```
 
-4. Upload to cPanel:
+2. Upload to cPanel:
    - Upload the entire `dist` folder contents to your public_html directory
+   - Upload `.htaccess` file to the same directory as index.html
    - Upload `.env` file to the root directory (one level above public_html)
 
-5. First-time setup:
+3. Database Setup:
+   - Go to cPanel > MySQL Databases
+   - Create a new database
+   - Create a new user
+   - Add user to database with all privileges
+   - Visit `yourdomain.com/install` to complete setup
+
+4. First-time Setup:
    - Visit `yourdomain.com/admin/setup` to create your admin account
    - After setup, this page will be disabled
 
@@ -62,3 +48,4 @@ npm run build
 - MySQL database
 - Static site generation
 - Easy installation wizard
+- cPanel compatible</content>
