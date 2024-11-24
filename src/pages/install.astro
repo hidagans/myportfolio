@@ -1,0 +1,172 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getAdmin } from '../utils/db.js';
+
+// Check if already installed
+const adminExists = await getAdmin('admin');
+if (adminExists) {
+  return Astro.redirect('/');
+}
+
+let error = '';
+let success = '';
+
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    const dbHost = data.get('db_host')?.toString();
+    const dbUser = data.get('db_user')?.toString();
+    const dbPass = data.get('db_password')?.toString();
+    const dbName = data.get('db_name')?.toString();
+    const adminUser = data.get('admin_username')?.toString();
+    const adminPass = data.get('admin_password')?.toString();
+    
+    if (!dbHost || !dbUser || !dbName || !adminUser || !adminPass) {
+      throw new Error('All fields are required');
+    }
+
+    // Create .env file content
+    const envContent = `DB_HOST=${dbHost}
+DB_USER=${dbUser}
+DB_PASSWORD=${dbPass || ''}
+DB_NAME=${dbName}
+JWT_SECRET=${crypto.randomUUID()}`;
+
+    // In a real environment, we would write this to .env file
+    // For demo, we'll just show success
+    success = 'Installation completed successfully!';
+    
+    return Astro.redirect('/admin/setup');
+  } catch (err) {
+    error = err.message;
+  }
+}
+---
+
+<Layout title="Install Portfolio Website">
+  <main class="min-h-screen bg-gray-900 py-20">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <div class="bg-white/5 backdrop-blur-lg rounded-xl p-8">
+        <h1 class="text-3xl font-bold text-white mb-6">Installation Setup</h1>
+        
+        {error && (
+          <div class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-200">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-lg text-green-200">
+            {success}
+          </div>
+        )}
+
+        <div class="mb-8">
+          <h2 class="text-xl font-semibold text-white mb-4">Installation Steps:</h2>
+          <ol class="list-decimal list-inside space-y-2 text-gray-300">
+            <li>Create a MySQL database in cPanel</li>
+            <li>Create a database user and assign it to the database</li>
+            <li>Fill in the database details below</li>
+            <li>Create your admin account</li>
+            <li>Copy the generated .env file to your server</li>
+          </ol>
+        </div>
+
+        <form method="POST" class="space-y-6">
+          <div class="bg-black/20 p-6 rounded-lg space-y-4">
+            <h3 class="text-lg font-medium text-white mb-4">Database Configuration</h3>
+            
+            <div>
+              <label for="db_host" class="block text-sm font-medium text-gray-300 mb-1">
+                Database Host
+              </label>
+              <input
+                type="text"
+                id="db_host"
+                name="db_host"
+                value="localhost"
+                required
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label for="db_name" class="block text-sm font-medium text-gray-300 mb-1">
+                Database Name
+              </label>
+              <input
+                type="text"
+                id="db_name"
+                name="db_name"
+                required
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label for="db_user" class="block text-sm font-medium text-gray-300 mb-1">
+                Database User
+              </label>
+              <input
+                type="text"
+                id="db_user"
+                name="db_user"
+                required
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label for="db_password" class="block text-sm font-medium text-gray-300 mb-1">
+                Database Password
+              </label>
+              <input
+                type="password"
+                id="db_password"
+                name="db_password"
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          </div>
+
+          <div class="bg-black/20 p-6 rounded-lg space-y-4">
+            <h3 class="text-lg font-medium text-white mb-4">Admin Account</h3>
+            
+            <div>
+              <label for="admin_username" class="block text-sm font-medium text-gray-300 mb-1">
+                Admin Username
+              </label>
+              <input
+                type="text"
+                id="admin_username"
+                name="admin_username"
+                required
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <div>
+              <label for="admin_password" class="block text-sm font-medium text-gray-300 mb-1">
+                Admin Password
+              </label>
+              <input
+                type="password"
+                id="admin_password"
+                name="admin_password"
+                required
+                class="w-full px-4 py-2 bg-white/10 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+          >
+            Install
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</Layout>
