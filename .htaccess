@@ -1,4 +1,4 @@
-<content># Enable rewrite engine
+# Enable rewrite engine
 RewriteEngine On
 
 # Redirect all requests to index.html
@@ -27,4 +27,7 @@ Header set Referrer-Policy "strict-origin-when-cross-origin"
     ExpiresByType image/webp "access plus 1 year"
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-</IfModule></content>
+</IfModule>
+
+# Set PHP memory limit
+php_value memory_limit 256M
